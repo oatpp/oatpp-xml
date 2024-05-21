@@ -1,7 +1,13 @@
 
 add_library(${OATPP_THIS_MODULE_NAME}
-        oatpp-xml/MyClass.hpp
-        oatpp-xml/MyClass.cpp
+        oatpp-xml/Deserializer.cpp
+        oatpp-xml/Deserializer.hpp
+        oatpp-xml/ObjectMapper.cpp
+        oatpp-xml/ObjectMapper.hpp
+        oatpp-xml/Serializer.cpp
+        oatpp-xml/Serializer.hpp
+        oatpp-xml/Utils.cpp
+        oatpp-xml/Utils.hpp
 )
 
 set_target_properties(${OATPP_THIS_MODULE_NAME} PROPERTIES

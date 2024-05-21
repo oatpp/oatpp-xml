@@ -1,5 +1,7 @@
 add_executable(module-tests
         oatpp-xml/tests.cpp
+        oatpp-xml/UtilsTest.cpp
+        oatpp-xml/UtilsTest.hpp
 )
 
 set_target_properties(module-tests PROPERTIES
