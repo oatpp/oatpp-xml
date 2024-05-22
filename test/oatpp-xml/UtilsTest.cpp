@@ -33,20 +33,27 @@ void UtilsTest::onRun() {
 
   {
     data::mapping::ErrorStack errorStack;
-    auto res = Utils::escapeAttribute("\"red heart\" emoji ❤\uFE0F is composed 😍 + 💚 + ❤️", '"', errorStack);
+    auto res = Utils::escapeAttributeText("\"red heart\" emoji ❤\uFE0F is composed 😍 + 💚 + ❤️", '"', errorStack);
     if (!errorStack.empty()) {
       OATPP_LOGe(TAG, "errorStack: \n{}", errorStack.stacktrace())
     }
     OATPP_LOGd(TAG, "res='{}'", res)
+    OATPP_LOGd(TAG, "ures='{}'", Utils::unescapeText(res, errorStack));
   }
 
   {
     data::mapping::ErrorStack errorStack;
-    auto res = Utils::escapeElement("\"red heart\" emoji ❤\uFE0F is composed 😍 + 💚 + ❤️", errorStack);
+    auto res = Utils::escapeElementText("\"red heart\" emoji ❤\uFE0F is composed\n\n 😍 + 💚 + ❤️a", errorStack);
     if (!errorStack.empty()) {
       OATPP_LOGe(TAG, "errorStack: \n{}", errorStack.stacktrace())
     }
     OATPP_LOGd(TAG, "res='{}'", res)
+    OATPP_LOGd(TAG, "ures='{}'", Utils::unescapeText(res, errorStack));
+  }
+
+  {
+    data::mapping::ErrorStack errorStack;
+    OATPP_LOGd(TAG, "ures='{}'", Utils::unescapeText("Line1&#10;Line2", errorStack));
   }
 
 }

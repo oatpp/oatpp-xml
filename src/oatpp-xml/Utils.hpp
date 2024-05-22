@@ -32,15 +32,20 @@ namespace oatpp { namespace xml {
 
 class Utils {
 public:
+  static const std::unordered_map<data::share::StringKeyLabel, std::string> PREDEFINED_ENTITIES;
+public:
 
   static v_uint32 escapeChar(data::stream::ConsistentOutputStream* stream,
                              const char* buffer, v_buff_usize bufferSize,
                              data::mapping::ErrorStack& errorStack);
 
-  static oatpp::String escapeAttribute(const oatpp::String& text, char enclosingChar, data::mapping::ErrorStack& errorStack);
-  static oatpp::String unescapeAttribute(const oatpp::String& text);
+  static bool unescapeChar(data::stream::ConsistentOutputStream* stream, const data::share::StringKeyLabel& charRef);
 
-  static oatpp::String escapeElement(const oatpp::String& text, data::mapping::ErrorStack& errorStack);
+  static oatpp::String escapeAttributeText(const oatpp::String& text, char enclosingChar, data::mapping::ErrorStack& errorStack);
+  static oatpp::String escapeElementText(const oatpp::String& text, data::mapping::ErrorStack& errorStack);
+
+  static oatpp::String unescapeText(const oatpp::String& text, data::mapping::ErrorStack& errorStack);
+
 
 };
 
