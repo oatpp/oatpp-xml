@@ -105,6 +105,32 @@ void UtilsTest::onRun() {
     OATPP_LOGd(TAG, "xml:'\n{}'", xml)
   }
 
+  {
+    oatpp::String text = "attr.1.='value1' attr2=\"))__\" attr3='&quot;red heart&quot; emoji &#10084;&#65039; is composed &#128525; + &#128154; + &#10084;&#65039;'";
+    utils::parser::Caret caret = text;
+
+    data::mapping::Tree tree;
+
+    Deserializer::Config config;
+
+    Deserializer::State state;
+    state.tree = &tree;
+    state.caret = &caret;
+    state.config = &config;
+
+    Deserializer::parseAttributes(state);
+
+    if(!state.errorStack.empty()) {
+      OATPP_LOGe(TAG, "stacktrace:\n{}", state.errorStack.stacktrace())
+    }
+
+    for(v_int32 i = 0; i < tree.attributes().size(); i ++) {
+      auto attr = tree.attributes()[i];
+      OATPP_LOGd(TAG, "'{}'='{}'", attr.first, attr.second)
+    }
+
+  }
+
 }
 
 }}

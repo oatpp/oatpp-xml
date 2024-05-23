@@ -25,6 +25,8 @@
 #ifndef OATPP_XML_DESERIALIZER_HPP
 #define OATPP_XML_DESERIALIZER_HPP
 
+#include "./Utils.hpp"
+
 #include "oatpp/data/mapping/ObjectMapper.hpp"
 #include "oatpp/data/mapping/Tree.hpp"
 
@@ -53,9 +55,13 @@ public:
     data::mapping::ErrorStack errorStack;
   };
 
-private:
+public:
 
+  static oatpp::String parseElementName(State& state);
+  static oatpp::String parseAttributeName(State& state);
+  static oatpp::String parseAttributeValue(State& state);
 
+  static void parseAttributes(State& state);
 
 public:
 
