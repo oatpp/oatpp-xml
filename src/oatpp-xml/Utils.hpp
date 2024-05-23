@@ -32,6 +32,12 @@ namespace oatpp { namespace xml {
 
 class Utils {
 public:
+  static constexpr v_uint32 FLAG_ESCAPE_STANDARD_ONLY = 0;
+  static constexpr v_uint32 FLAG_ESCAPE_WHITESPACE = 1;
+  static constexpr v_uint32 FLAG_ESCAPE_UTF8CHAR = 2;
+
+  static constexpr v_uint32 FLAG_ESCAPE_ALL = FLAG_ESCAPE_WHITESPACE | FLAG_ESCAPE_UTF8CHAR;
+public:
   static const std::unordered_map<data::share::StringKeyLabel, std::string> PREDEFINED_ENTITIES;
 public:
 

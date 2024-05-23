@@ -132,6 +132,10 @@ bool Utils::unescapeChar(data::stream::ConsistentOutputStream* stream, const dat
 
 oatpp::String Utils::escapeAttributeText(const oatpp::String& text, char enclosingChar, data::mapping::ErrorStack& errorStack) {
 
+  if(text == nullptr) {
+    return "";
+  }
+
   data::stream::BufferOutputStream ss(256);
 
   auto data = text->data();
@@ -174,6 +178,10 @@ oatpp::String Utils::escapeAttributeText(const oatpp::String& text, char enclosi
 }
 
 oatpp::String Utils::escapeElementText(const oatpp::String& text, data::mapping::ErrorStack& errorStack) {
+
+  if(text == nullptr) {
+    return "";
+  }
 
   data::stream::BufferOutputStream ss(256);
 

@@ -26,6 +26,8 @@
 #ifndef OATPP_XML_SERIALIZER_HPP
 #define OATPP_XML_SERIALIZER_HPP
 
+#include "./Utils.hpp"
+
 #include "oatpp/data/mapping/ObjectMapper.hpp"
 #include "oatpp/data/mapping/Tree.hpp"
 #include "oatpp/Types.hpp"
@@ -40,7 +42,30 @@ public:
   class Config : public oatpp::base::Countable {
   public:
 
+    /**
+     * Include fields with value == nullptr into serialized XML.
+     */
     bool includeNullElements = true;
+
+    /**
+     * Use XML Beautifier.
+     */
+    bool useBeautifier = false;
+
+    /**
+     * Beautifier Indent.
+     */
+    oatpp::String beautifierIndent = "  ";
+
+    /**
+     * Beautifier new line.
+     */
+    oatpp::String beautifierNewLine = "\n";
+
+    /**
+     * Escape flags.
+     */
+    v_uint32 escapeFlags = xml::Utils::FLAG_ESCAPE_STANDARD_ONLY;
   };
 
 public:
@@ -56,7 +81,14 @@ public:
   };
 
 private:
+  static void startNode(const oatpp::String& name, State& state);
+  static void endNode(const oatpp::String& name, State& state);
+private:
 
+  static void serializeString(State& state);
+  static void serializeArray(State& state);
+  static void serializeMap(State& state);
+  static void serializePairs(State& state);
 
 public:
 
