@@ -155,10 +155,28 @@ void Serializer::serializePairs(State& state) {
 
     if(!nestedState.tree->isNull() || state.config->includeNullElements) {
 
-      startNode(pair.first, nestedState);
+      auto& key = pair.first;
+      if(!key->empty() && key->data()[0] == '!') {
+
+        if(key == "!TEXT") {
+          serializeString(nestedState);
+        }
+
+        if(!nestedState.errorStack.empty()) {
+          state.errorStack.splice(nestedState.errorStack);
+          state.errorStack.push("[oatpp::xml::Serializer::serializePairs()]: key='" + key + "'");
+          return;
+        }
+
+        continue;
+
+      }
+
+
+      startNode(key, nestedState);
       if(!nestedState.errorStack.empty()) {
         state.errorStack.splice(nestedState.errorStack);
-        state.errorStack.push("[oatpp::xml::Serializer::serializePairs()]: key='" + pair.first + "'");
+        state.errorStack.push("[oatpp::xml::Serializer::serializePairs()]: key='" + key + "'");
         return;
       }
 
@@ -166,11 +184,11 @@ void Serializer::serializePairs(State& state) {
 
       if(!nestedState.errorStack.empty()) {
         state.errorStack.splice(nestedState.errorStack);
-        state.errorStack.push("[oatpp::xml::Serializer::serializePairs()]: key='" + pair.first + "'");
+        state.errorStack.push("[oatpp::xml::Serializer::serializePairs()]: key='" + key + "'");
         return;
       }
 
-      endNode(pair.first, nestedState);
+      endNode(key, nestedState);
 
     }
 

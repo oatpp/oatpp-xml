@@ -60,8 +60,14 @@ public:
   static oatpp::String parseElementName(State& state);
   static oatpp::String parseAttributeName(State& state);
   static oatpp::String parseAttributeValue(State& state);
-
   static void parseAttributes(State& state);
+
+  static void parsePINode(State& state, oatpp::String& name);
+  static void parseCommentNode(State& state, oatpp::String& name);
+  static void parseCDataNode(State& state, oatpp::String& name);
+  static void parseElementContent(State& state, const oatpp::String& name);
+  static void parseElementNode(State& state, oatpp::String& name);
+  static void parseNode(State& state, oatpp::String& name);
 
 public:
 

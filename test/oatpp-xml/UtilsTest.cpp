@@ -131,6 +131,49 @@ void UtilsTest::onRun() {
 
   }
 
+  {
+    oatpp::String text =
+R"(
+<root>
+text <b/> text
+
+<![CDATA[
+             if (DateTime.Now > License.Expiry)
+                  Application.Exit();
+         ]]>
+
+<xml/>
+</root   >
+)";
+
+    data::mapping::Tree tree;
+    {
+      Deserializer::Config config;
+
+      utils::parser::Caret caret(text);
+
+      Deserializer::State state;
+      state.tree = &tree;
+      state.caret = &caret;
+      state.config = &config;
+
+      Deserializer::deserialize(state);
+
+      if (!state.errorStack.empty()) {
+        OATPP_LOGe(TAG, "stacktrace:\n{}", state.errorStack.stacktrace())
+      }
+
+      OATPP_LOGd(TAG, "xml:\n{}", tree.debugPrint())
+    }
+
+    {
+      ObjectMapper mapper;
+      auto xml = mapper.writeToString(oatpp::Tree(tree));
+      OATPP_LOGd(TAG, "result xml:'\n{}'", xml)
+    }
+
+  }
+
 }
 
 }}
