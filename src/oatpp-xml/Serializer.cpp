@@ -47,6 +47,106 @@ void Serializer::endNode(const oatpp::String& name, State& state) {
   state.stream->writeSimple(">", 1);
 }
 
+void Serializer::serializeCData(State& state) {
+
+  auto& node = *state.tree;
+
+  if(node.isNull()) {
+    return;
+  }
+
+  if(node.getType() != data::mapping::Tree::Type::STRING) {
+    state.errorStack.push("[oatpp::xml::Serializer::serializeCData()]: String is expected as CDATA data");
+    return;
+  }
+
+  state.stream->writeSimple("<![CDATA[", 9);
+  auto data = state.tree->getString();
+  state.stream->writeSimple(data->data(), static_cast<v_buff_size>(data->size()));
+  state.stream->writeSimple("]]>", 3);
+
+}
+
+void Serializer::serializeComment(State& state) {
+
+  auto& node = *state.tree;
+
+  if(node.isNull()) {
+    return;
+  }
+
+  if(node.getType() != data::mapping::Tree::Type::STRING) {
+    state.errorStack.push("[oatpp::xml::Serializer::serializeComment()]: String is expected as COMMENT data");
+    return;
+  }
+
+  state.stream->writeSimple("<!--", 4);
+  auto data = state.tree->getString();
+  state.stream->writeSimple(data->data(), static_cast<v_buff_size>(data->size()));
+  state.stream->writeSimple("-->", 3);
+
+}
+
+void Serializer::serializePINode(State& state, const oatpp::String& key) {
+
+  if(!key || key->size() < 2) {
+    state.errorStack.push("[oatpp::xml::Serializer::serializePINode()]: Invalid tag name");
+    return;
+  }
+
+  auto& node = *state.tree;
+
+  if(node.getType() != data::mapping::Tree::Type::STRING) {
+    state.errorStack.push("[oatpp::xml::Serializer::serializePINode()]: String is expected as PI data");
+    return;
+  }
+
+  state.stream->writeSimple("<?", 2);
+  state.stream->writeSimple(key->data() + 1, static_cast<v_buff_size>(key->size() - 1));
+
+  auto data = state.tree->getString();
+  if(!data->empty()) {
+    state.stream->writeSimple(" ", 1);
+    state.stream->writeSimple(data->data(), static_cast<v_buff_size>(data->size()));
+  }
+
+  state.stream->writeSimple("?>", 2);
+
+}
+
+bool Serializer::serializeSpecial(State& state, const oatpp::String& key) {
+  if(key->empty()) return false;
+
+  auto c = key->data()[0];
+
+  switch (c) {
+    case '!': {
+      if(key == "!TEXT") {
+        serializeString(state);
+        return true;
+      }
+      if(key == "!CDATA") {
+        serializeCData(state);
+        return true;
+      }
+      if(key == "!COMMENT") {
+        serializeComment(state);
+        return true;
+      }
+      state.errorStack.push("[oatpp::xml::Serializer::serializeSpecial()]: Unknown special node type '" + key + "'");
+      break;
+    }
+    case '?': {
+      serializePINode(state, key);
+      return true;
+    }
+    default:
+      break;
+  }
+
+  return false;
+}
+
 void Serializer::serializeString(State& state) {
   auto content = Utils::escapeElementText(state.tree->getString(), state.errorStack);
   if(!state.errorStack.empty()) {
@@ -156,22 +256,14 @@ void Serializer::serializePairs(State& state) {
     if(!nestedState.tree->isNull() || state.config->includeNullElements) {
 
       auto& key = pair.first;
-      if(!key->empty() && key->data()[0] == '!') {
-
-        if(key == "!TEXT") {
-          serializeString(nestedState);
-        }
-
+      if(serializeSpecial(nestedState, key)) {
         if(!nestedState.errorStack.empty()) {
           state.errorStack.splice(nestedState.errorStack);
           state.errorStack.push("[oatpp::xml::Serializer::serializePairs()]: key='" + key + "'");
           return;
         }
-
         continue;
-
       }
-
 
       startNode(key, nestedState);
       if(!nestedState.errorStack.empty()) {
@@ -201,8 +293,8 @@ void Serializer::serialize(oatpp::xml::Serializer::State &state) {
   switch (state.tree->getType()) {
 
     case data::mapping::Tree::Type::UNDEFINED:
-      state.errorStack.push("[oatpp::xml::Serializer::serialize()]: "
-                            "UNDEFINED tree node is NOT serializable. To fix: set node value.");
+//      state.errorStack.push("[oatpp::xml::Serializer::serialize()]: "
+//                            "UNDEFINED tree node is NOT serializable. To fix: set node value.");
       return;
     case data::mapping::Tree::Type::NULL_VALUE: state.stream->writeSimple("null", 4); return;
 

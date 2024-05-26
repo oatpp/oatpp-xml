@@ -85,6 +85,10 @@ private:
   static void endNode(const oatpp::String& name, State& state);
 private:
 
+  static void serializeCData(State& state);
+  static void serializeComment(State& state);
+  static void serializePINode(State& state, const oatpp::String& key);
+  static bool serializeSpecial(State& state, const oatpp::String& key);
   static void serializeString(State& state);
   static void serializeArray(State& state);
   static void serializeMap(State& state);

@@ -31,7 +31,7 @@ oatpp::String Deserializer::parseElementName(State& state) {
   auto size = state.caret->getDataSize() - state.caret->getPosition();
   for(v_buff_size i = 0; i < size; i ++) {
     auto c = data[i];
-    if(i > 0 && (c == '/' || c == '>' || c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\f')) {
+    if(i > 0 && (c == '/' || c == '>' || c == ' ' || c == '?' || c == '\t' || c == '\n' || c == '\r' || c == '\f')) {
       state.caret->inc(i);
       return oatpp::String(data, i);
     }
@@ -149,6 +149,7 @@ void Deserializer::parsePINode(State& state, oatpp::String& name) {
     return;
   }
 
+  state.caret->skipBlankChars();
   auto label = state.caret->putLabel();
 
   if(!state.caret->findText("?>", 2)) {

@@ -134,15 +134,10 @@ void UtilsTest::onRun() {
   {
     oatpp::String text =
 R"(
+<?xml blah?>
 <root>
-text <b/> text
-
-<![CDATA[
-             if (DateTime.Now > License.Expiry)
-                  Application.Exit();
-         ]]>
-
-<xml/>
+  <!-- next comes text -->
+  <text>this is text</text>
 </root   >
 )";
 
