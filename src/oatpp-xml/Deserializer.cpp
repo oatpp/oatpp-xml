@@ -227,8 +227,13 @@ void Deserializer::parseElementContent(State& state, const oatpp::String& name) 
       state.caret->setPosition(i);
 
       if(hasText) {
+        auto text = Utils::unescapeText(label.toString(), state.errorStack);
+        if(!state.errorStack.empty()) {
+          state.errorStack.push("[oatpp::xml::Deserializer::parseElementContent()]");
+          return;
+        }
         data::mapping::Tree node;
-        node.setString(label.toString());
+        node.setString(text);
         nodes.emplace_back("!TEXT", std::move(node));
       }
 

@@ -136,6 +136,8 @@ void UtilsTest::onRun() {
 R"(
 <?xml blah?>
 <root>
+  <node>red heart" emoji &#10084;&#65039; is composed&#10;&#10; &#128525; + &#128154; + &#10084;&#65039;a</node>
+  <ETag>&#34;cdf2b728201eb3371b6636638b6229cf&#34;</ETag>
   <!-- next comes text -->
   <text>this is text</text>
 </root   >
